@@ -2,15 +2,15 @@
   "name": "devicesimulator",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "nodemon src/app.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1",
-    "socket.io": "^3.0.4"
+    "restart": "^2.0.0",
+    "socket.io-client": "^3.0.4"
   }
 }
