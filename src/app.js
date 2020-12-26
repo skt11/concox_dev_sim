@@ -1,3 +1,4 @@
+const { data } = require("./shared/Constants");
 const socket = require('socket.io-client')('http://localhost:3001');
 
 let heartBeatinterval, loginInterval;
@@ -10,7 +11,7 @@ socket.on('connect', () => {
             console.log("Server Timeout, terminal rebooting")
             clearCounters()
         }
-        socket.emit("login", "logindata")
+        socket.emit("login", data.login)
         loginAttempts += 1
         console.log(`login attempt #${loginAttempts}`)
     }, 5000)
@@ -30,22 +31,22 @@ socket.on("loginResponse", (response) => {
                 console.log("Server Timeout, terminal rebooting")
                 clearCounters()
             }
-            socket.emit("heartBeat", "heartBeat")
+            socket.emit("heartBeat", data.heartBeat)
             heartBeatAttempts += 1
         }, 5000)
 
-        socket.emit('gpsData', "gps data")
+        socket.emit('gpsData', data.gps)
     }
 
 })
 
-socket.on('heartBeatResponse', (data) => {
-    console.log(data)
+socket.on('heartBeatResponse', (response) => {
+    console.log(response)
     if (true) {
         heartBeatAttempts = 0
         clearInterval(heartBeatinterval)
-        if (!data) {
-            socket.emit("heartBeat", "heartBeatData")
+        if (!response) {
+            socket.emit("heartBeat", data.heartBeat)
         }
     }
 })
