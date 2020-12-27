@@ -5,12 +5,16 @@ let heartBeatinterval, loginInterval;
 let loginAttempts = 0, heartBeatAttempts = 0
 
 socket.on('connect', () => {
-    console.log("connected")
+    
+    console.log("Connected to Adapter")
+    
     loginInterval = setInterval(() => {
+        
         if (loginAttempts >= 3) {
             console.log("Server Timeout, terminal rebooting")
             clearCounters()
         }
+        
         socket.emit("login", data.login)
         loginAttempts += 1
         console.log(`login attempt #${loginAttempts}`)
@@ -21,8 +25,9 @@ socket.on('connect', () => {
 
 socket.on("loginResponse", (response) => {
 
-    console.log(response)
-    if (true) {
+    if (response) {
+        console.log(`Successfully logged in. Response:${response}`)
+
         loginAttempts = 0
         clearInterval(loginInterval)
 
@@ -41,13 +46,15 @@ socket.on("loginResponse", (response) => {
 })
 
 socket.on('heartBeatResponse', (response) => {
-    console.log(response)
-    if (true) {
+    
+    if (response) {
+        console.log(`Heartbeat acknowledged. Response:${response}`)
+        
         heartBeatAttempts = 0
         clearInterval(heartBeatinterval)
-        if (!response) {
-            socket.emit("heartBeat", data.heartBeat)
-        }
+
+    } else {       
+        socket.emit("heartBeat", data.heartBeat)
     }
 })
 
