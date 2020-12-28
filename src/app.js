@@ -1,17 +1,19 @@
 const { data } = require("./shared/Constants");
-const socket = require('socket.io-client')('http://localhost:3001');
+const socket = require('socket.io-client')(process.env.ADAPTER_URL);
 
 let heartBeatinterval, loginInterval;
 let loginAttempts = 0, heartBeatAttempts = 0
 
+console.log("Device online, attempting connection to adapter...")
+
 socket.on('connect', () => {
     
-    console.log("Connected to Adapter")
+    console.log(`Connected to Adapter on ${process.env.ADAPTER_URL}`)
     
     loginInterval = setInterval(() => {
         
         if (loginAttempts >= 3) {
-            console.log("Server Timeout, terminal rebooting")
+            console.log("Server Timeout, terminal rebooting...")
             clearCounters()
         }
         
@@ -26,14 +28,14 @@ socket.on('connect', () => {
 socket.on("loginResponse", (response) => {
 
     if (response) {
-        console.log(`Successfully logged in. Response:${response}`)
+        console.log(`Successfully logged in.`)
 
         loginAttempts = 0
         clearInterval(loginInterval)
 
         heartBeatinterval = setInterval(() => {
             if (heartBeatAttempts >= 3) {
-                console.log("Server Timeout, terminal rebooting")
+                console.log("Server Timeout, terminal rebooting...")
                 clearCounters()
             }
             socket.emit("heartBeat", data.heartBeat)
@@ -45,16 +47,13 @@ socket.on("loginResponse", (response) => {
 
 })
 
-socket.on('heartBeatResponse', (response) => {
-    
+socket.on('heartBeatResponse', (response) => {  
+   
     if (response) {
-        console.log(`Heartbeat acknowledged. Response:${response}`)
+        console.log(`Heartbeat acknowledged.`)
         
         heartBeatAttempts = 0
         clearInterval(heartBeatinterval)
-
-    } else {       
-        socket.emit("heartBeat", data.heartBeat)
     }
 })
 
