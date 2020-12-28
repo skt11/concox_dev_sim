@@ -10,6 +10,8 @@ socket.on('connect', () => {
     
     console.log(`Connected to Adapter on ${process.env.ADAPTER_URL}`)
     
+    // Try logging in for 3 times in 5 sec intervals,
+    // clear the counters and repeat the process if device is not logged in
     loginInterval = setInterval(() => {
         
         if (loginAttempts >= 3) {
@@ -24,7 +26,8 @@ socket.on('connect', () => {
 });
 
 
-
+//If login response is received, stop trying to login by clearing the interval
+//and start sending heartbeat packets untill acknowledgement is received
 socket.on("loginResponse", (response) => {
 
     if (response) {
@@ -33,6 +36,8 @@ socket.on("loginResponse", (response) => {
         loginAttempts = 0
         clearInterval(loginInterval)
 
+        // Try heart Beat for 3 times in 5 sec intervals,
+        // clear the counters and repeat the process if acknowledgement not received
         heartBeatinterval = setInterval(() => {
             if (heartBeatAttempts >= 3) {
                 console.log("Server Timeout, terminal rebooting...")
@@ -40,13 +45,16 @@ socket.on("loginResponse", (response) => {
             }
             socket.emit("heartBeat", data.heartBeat)
             heartBeatAttempts += 1
+            console.log(`login attempt #${heartBeatAttempts}`)
         }, 5000)
 
+        //Send gps data on successful login
         socket.emit('gpsData', data.gps)
     }
 
 })
 
+//On heartbeat response clear the heartbeat interval
 socket.on('heartBeatResponse', (response) => {  
    
     if (response) {
