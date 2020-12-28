@@ -8,5 +8,5 @@
 Run ```npm run dev``` in the project root.
 
 ### Config
-Chnage the **ADAPTER_URL** in **config/dev.env** to connect to a different adapter.
+Change the **ADAPTER_URL** in **config/dev.env** to connect to a different adapter.
 >**Note:** Terminate and re run the proecess after changing env variables.
