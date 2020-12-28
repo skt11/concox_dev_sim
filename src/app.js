@@ -45,7 +45,7 @@ socket.on("loginResponse", (response) => {
             }
             socket.emit("heartBeat", data.heartBeat)
             heartBeatAttempts += 1
-            console.log(`login attempt #${heartBeatAttempts}`)
+            console.log(`Heartbeat attempt #${heartBeatAttempts}`)
         }, 5000)
 
         //Send gps data on successful login
